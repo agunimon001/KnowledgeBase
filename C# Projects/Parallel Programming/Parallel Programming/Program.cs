@@ -32,6 +32,32 @@ class Program
     }
 }
 
+class TestCode
+{
+    public static int TestRun()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            Console.WriteLine("TestRun: {0}", i);
+            Thread.Sleep(1000);
+        }
+
+        return 1;
+    }
+
+    public static int TestWithException()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            if (i == 3) throw new Exception("Exception thrown");
+            Console.WriteLine("TestWithException: {0}", i);
+            Thread.Sleep(1000);
+        }
+
+        return 2;
+    }
+}
+
 class ThreadExample
 {
     public ThreadExample()
@@ -81,12 +107,12 @@ class DelegateExample
 
     public DelegateExample()
     {
-        MyDelegate del = new MyDelegate(RunDelegate);
+        MyDelegate del = new MyDelegate(TestCode.TestRun);
         var ar = del.BeginInvoke(null, null);
-        int result = del.EndInvoke(ar);
+        int result = del.EndInvoke(ar); // Gets result from the asynchornous method; blocks till result is returned
         Console.WriteLine("RunDelegate Result: {0}", result);
 
-        del = new MyDelegate(DelegateWithException);
+        del = new MyDelegate(TestCode.TestWithException);
         ar = del.BeginInvoke(null, null);
         try
         {
@@ -100,40 +126,17 @@ class DelegateExample
 
         Console.WriteLine("End of DelegateExample");
     }
-
-    private int DelegateWithException()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            if (i == 3) throw new Exception("Exception thrown");    // Exception will be flagged if Just My Code is enabled; disable option
-            Console.WriteLine("RunDelegate: {0}", i);
-            Thread.Sleep(1000);
-        }
-
-        return 1;
-    }
-
-    private int RunDelegate()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            Console.WriteLine("RunDelegate: {0}", i);
-            Thread.Sleep(1000);
-        }
-
-        return 1;
-    }
 }
 
 class TaskExample
 {
     public TaskExample()
     {
-        var task = Task.Factory.StartNew(RunTask);
+        var task = Task.Factory.StartNew(TestCode.TestRun);
         //task.Wait();
         Console.WriteLine("RunTask Result: {0}", task.Result);  // Task.Result blocks, therefore task.Wait is irrelevant.
 
-        task = Task.Factory.StartNew(TaskWithException);
+        task = Task.Factory.StartNew(TestCode.TestWithException);
         try
         {
             Console.WriteLine("RunTask Result: {0}", task.Result);
@@ -144,28 +147,5 @@ class TaskExample
         }
 
         Console.WriteLine("End of TaskExample");
-    }
-
-    private int TaskWithException()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            if (i == 3) throw new Exception("Exception thrown");
-            Console.WriteLine("TaskWithException: {0}", i);
-            Thread.Sleep(1000);
-        }
-
-        return 0;
-    }
-
-    private int RunTask()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            Console.WriteLine("RunTask: {0}", i);
-            Thread.Sleep(1000);
-        }
-
-        return 1;
     }
 }
