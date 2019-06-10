@@ -2,6 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+/// <summary>
+/// Shows the three examples of parallel programming
+/// </summary>
 class Program
 {
     static void Main()
@@ -32,6 +35,9 @@ class Program
     }
 }
 
+/// <summary>
+/// Code used for testing in same environment
+/// </summary>
 class TestCode
 {
     public static int TestRun()
